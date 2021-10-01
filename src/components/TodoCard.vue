@@ -1,10 +1,18 @@
 <template>
-  <li class="todo-card">
-    <p>{{ todo.text }}</p>
+  <li :class="{ 'todo-card': true, 'todo-completed': todo.completed }">
+    <p :class="{ completed: todo.completed }">{{ todo.text }}</p>
     <div>
-      <i class="fas fa-trash danger"></i>
-      <i v-if="!todo.completed" class="fas fa-check-square success"></i>
-      <i v-else class="fas fa-minus-square primary"></i>
+      <i class="fas fa-trash danger" @click="handleRemove()"></i>
+      <i
+        v-if="!todo.completed"
+        class="fas fa-check-square success"
+        @click="handleComplete()"
+      ></i>
+      <i
+        v-else
+        class="fas fa-minus-square primary"
+        @click="handleComplete()"
+      ></i>
     </div>
   </li>
 </template>
@@ -12,9 +20,19 @@
 <script>
 export default {
   name: "TodoCard",
+  emits: ["complete", "removeTodo"],
 
   props: {
     todo: Object,
+  },
+
+  methods: {
+    handleComplete() {
+      this.$emit("complete", this.todo.id);
+    },
+    handleRemove() {
+      this.$emit("removeTodo", this.todo.id);
+    },
   },
 };
 </script>
@@ -28,6 +46,15 @@ export default {
   border-bottom: 1px solid #ccc;
   width: 60%;
   margin: auto;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+.todo-completed {
+  opacity: 0.8;
+  background: #ccc;
 }
 
 i {
